@@ -2,10 +2,8 @@ package com.inventory.inventory_system.serviceImpl;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Service;
 
 import com.inventory.inventory_system.customValidation.ProductValidation;
@@ -112,5 +110,11 @@ public class ProductServiceImpl implements ProductService {
 		}
 
 		return new Response(HttpStatus.OK.value(), "Products fetched successfully", productDtos);
+	}
+
+	@Override
+	public Response deleteProduct() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

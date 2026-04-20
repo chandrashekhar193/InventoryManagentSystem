@@ -14,6 +14,8 @@ public interface ProductService {
 	
 	Response getAllProduct();
 	
+	Response deleteProduct();
+	
 	
 	
 
