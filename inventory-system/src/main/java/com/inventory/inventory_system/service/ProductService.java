@@ -10,11 +10,11 @@ public interface ProductService {
 	
 	Response updateProduct(ProductDto dto);
 	
-	Response getproductById(Long id);
-	
-	Response getAllProduct();
-	
-	Response deleteProduct();
+//	Response getproductById(Long id);
+//	
+//	Response getAllProduct();
+//	
+//	Response deleteProduct();
 	
 	
 	
