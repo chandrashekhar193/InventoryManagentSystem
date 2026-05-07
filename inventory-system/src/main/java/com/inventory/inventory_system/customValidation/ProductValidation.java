@@ -6,16 +6,19 @@ import org.springframework.stereotype.Component;
 import com.inventory.inventory_system.dto.ProductDto;
 
 import com.inventory.inventory_system.exception.ValidationException;
+import com.inventory.inventory_system.repositoy.CategoryRepo;
 import com.inventory.inventory_system.repositoy.ProductRepo;
 
 @Component
 public class ProductValidation {
 
 	private final ProductRepo productRepo;
+	private final CategoryRepo categoryRepo;
 //	private final ProductDto productDto;
 
-	public ProductValidation(ProductRepo productRepo) {
+	public ProductValidation(ProductRepo productRepo,CategoryRepo categoryRepo) {
 		this.productRepo = productRepo;
+		this.categoryRepo=categoryRepo;
 		
 	}
 
@@ -35,6 +38,7 @@ public class ProductValidation {
 		validateAvailableQuantity(dto.getAvailableQuantity());
 		validateReservedQuantity(dto.getReservedQuantity());
 		validateIfProductIsAvailable(dto.getName());
+		validateCategoryId(dto.getCategoryId());
 
 		// Business rule
 		if (dto.getReservedQuantity() > dto.getAvailableQuantity()) {
@@ -80,6 +84,10 @@ public class ProductValidation {
 		if (quantity < 0) {
 			throw new ValidationException(HttpStatus.BAD_REQUEST.value(), "Reserved quantity cannot be negative");
 		}
+		
+		if(quantity>productDto.getAvailableQuantity()) {
+			throw new ValidationException(HttpStatus.BAD_REQUEST.value(), "reserve quantity can not be more than the available quantity");
+		}
 	}
 
 	
@@ -95,5 +103,13 @@ public class ProductValidation {
 	    if (productRepo.existsByName(normalizedName)) {
 	    	throw new ValidationException(HttpStatus.BAD_REQUEST.value(), "Product Already Exist");
 	    }
+	}
+	private void validateCategoryId(Long id) {
+		if (id==null ) {
+			throw new ValidationException(HttpStatus.BAD_REQUEST.value(), "Category can not be null");
+		}
+		if(!categoryRepo.findById(id).isPresent()){
+			throw new ValidationException(HttpStatus.BAD_REQUEST.value(), "Category id  not present");
+		}
 	}
 }

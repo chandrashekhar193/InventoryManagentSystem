@@ -23,8 +23,8 @@ public class OrderController {
 	}
 
 	@PostMapping("/saveOrder")
-	public ResponseEntity<Response> placeOrder(@RequestBody OrderRequest request) {
-
+	public ResponseEntity<Response> placeOrder(@RequestBody OrderRequest request) { 
+		
 		Response response = orderService.placeOrder(request.getProductId(), request.getQuantity());
 
 		return new ResponseEntity<>(response, HttpStatus.CREATED);
@@ -32,10 +32,9 @@ public class OrderController {
 
 	@PostMapping("/{orderId}/cancel")
 	public ResponseEntity<Response> cancelOrder(@PathVariable Long orderId) {
-
+		
 		Response response = orderService.cancelOrder(orderId);
-
-		return new ResponseEntity<>(response, HttpStatus.OK);
+		return new ResponseEntity<>(response, HttpStatus.OK); 
 	}
 
 	@PostMapping("/{orderId}/complete")

@@ -2,18 +2,26 @@ package com.inventory.inventory_system.serviceImpl;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import com.inventory.inventory_system.customValidation.ProductValidation;
 import com.inventory.inventory_system.dto.ProductDto;
+import com.inventory.inventory_system.dto.ProductFilterDto;
 import com.inventory.inventory_system.dto.Response;
 import com.inventory.inventory_system.entity.Product;
 import com.inventory.inventory_system.exception.ValidationException;
 import com.inventory.inventory_system.mapper.ProductMapper;
 import com.inventory.inventory_system.repositoy.ProductRepo;
 import com.inventory.inventory_system.service.ProductService;
+import com.inventory.inventory_system.specification.ProductSpecification;
 
 @Service
 public class ProductServiceImpl implements ProductService {
@@ -44,7 +52,8 @@ public class ProductServiceImpl implements ProductService {
 		}
 
 		Product existingProduct = productRepo.findById(dto.getId())
-				.orElseThrow(() -> new ValidationException(HttpStatus.NOT_FOUND.value(), "Product not found this id "+dto.getId()));
+				.orElseThrow(() -> new ValidationException(HttpStatus.NOT_FOUND.value(),
+						"Product not found this id " + dto.getId()));
 
 		// Validate name if being updated
 		if (dto.getName() != null) {
@@ -59,7 +68,7 @@ public class ProductServiceImpl implements ProductService {
 		}
 
 		// Update fields safely
-		if (dto.getPrice() != null) {
+		if (dto.getPrice() != null || dto.getPrice()>0) {
 			existingProduct.setPrice(dto.getPrice());
 		}
 
@@ -113,8 +122,55 @@ public class ProductServiceImpl implements ProductService {
 	}
 
 	@Override
-	public Response deleteProduct() {
+	public Response deleteProduct(Long id) {
 		// TODO Auto-generated method stub
-		return null;
+		if (id == null || id <= 0) {
+			return new Response(HttpStatus.BAD_REQUEST.value(), "Id cannot be null or less than/equal to zero");
+		}
+
+		Optional<Product> product = productRepo.findById(id);
+
+		if (!product.isPresent()) {
+			return new Response(HttpStatus.NOT_FOUND.value(), "Product not found with id: " + id);
+		}
+
+		productRepo.deleteById(id);
+
+		return new Response(HttpStatus.OK.value(), "Product deleted successfully");
 	}
+
+	@Override
+	public Response getFilteredProducts(ProductFilterDto dto, int page, int size, String sortBy) {
+		// 1. Validate pagination inputs
+		if (page < 0) {
+			page = 0;
+		}
+
+		if (size <= 0) {
+			size = 10;
+		}
+
+		// 2. Build specification
+		Specification<Product> specification = ProductSpecification.filter(dto);
+
+		// 3. Sorting
+		Sort sort = (sortBy == null || sortBy.trim().isEmpty() ? Sort.by("id") : Sort.by(sortBy));
+
+		// 4. Pageable
+		Pageable pageable = PageRequest.of(page, size, sort);
+
+		// 5. Fetch data
+		Page<Product> productPage = productRepo.findAll(specification, pageable);
+
+		List<Product> products = productPage.getContent();
+
+		// 6. Validate empty result
+		if (products.isEmpty()) {
+			throw new ValidationException(HttpStatus.NOT_FOUND.value(), "No products found");
+		}
+
+		return new Response(HttpStatus.OK.value(), "Products fetched successfully", products, productPage.getNumber(),
+				productPage.getTotalElements(), productPage.getTotalPages());
+	}
+
 }

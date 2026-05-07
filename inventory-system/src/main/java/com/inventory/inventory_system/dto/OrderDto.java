@@ -10,11 +10,12 @@ public class OrderDto {
 	private Long id;
 	private Long productId;
 	private Integer quantity;
-
 	private String status;
 	private LocalDateTime createdAt;
-	
 	private OrderStatus orderStatus;
+	private Long categoryId;
+	
+	
 	
 	public Long getId() {
 		return id;
@@ -55,8 +56,15 @@ public class OrderDto {
 		this.orderStatus = orderStatus;
 	}
 	
+	
+	public Long getCategoryId() {
+		return categoryId;
+	}
+	public void setCategoryId(Long categoryId) {
+		this.categoryId = categoryId;
+	}
 	public OrderDto(Long id, Long productId, Integer quantity, String status, LocalDateTime createdAt,
-			OrderStatus orderStatus) {
+			OrderStatus orderStatus,Long categoryId) { 
 		super();
 		this.id = id;
 		this.productId = productId;
@@ -64,13 +72,15 @@ public class OrderDto {
 		this.status = status;
 		this.createdAt = createdAt;
 		this.orderStatus = orderStatus;
+		this.categoryId=categoryId;  
+		
 	}
 	public OrderDto() {
 		super();
-		// TODO Auto-generated constructor stub
+		// TODO Auto-generated constructor stub 
 	}
 	@Override
-	public String toString() {
+	public String toString() { 
 		return "OrderDto [id=" + id + ", productId=" + productId + ", quantity=" + quantity + ", status=" + status
 				+ ", createdAt=" + createdAt + ", orderStatus=" + orderStatus + "]";
 	}

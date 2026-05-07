@@ -7,9 +7,11 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.inventory.inventory_system.dto.ProductDto;
+import com.inventory.inventory_system.dto.ProductFilterDto;
 import com.inventory.inventory_system.dto.Response;
 import com.inventory.inventory_system.entity.Product;
 import com.inventory.inventory_system.service.ProductService;
@@ -22,12 +24,12 @@ public class ProductController {
 
 	public ProductController(ProductService productService) {
 		this.productService = productService;
-	} 
+	}
 
 	@PostMapping("/save")
 	public ResponseEntity<Response> saveProduct(@RequestBody ProductDto dto) {
 		Response response = productService.saveproduct(dto);
-		return new ResponseEntity<>(response, HttpStatus.OK);
+		return new ResponseEntity<>(response, HttpStatus.CREATED);
 	}
 
 	@PostMapping("/update")
@@ -44,7 +46,7 @@ public class ProductController {
 		Response response = productService.getproductById(id);
 
 		return new ResponseEntity<>(response, HttpStatus.OK);
-	} 
+	}
 
 	@GetMapping("/getAll")
 	public ResponseEntity<Response> getAllProducts() {
@@ -52,6 +54,16 @@ public class ProductController {
 		Response response = productService.getAllProduct();
 
 		return new ResponseEntity<>(response, HttpStatus.OK);
+	}
+
+	@PostMapping("/filter")
+	public ResponseEntity<Response> getFilterData(@RequestBody ProductFilterDto dto,
+			@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size,
+			@RequestParam(defaultValue = "id") String sortBy) {
+
+		Response response = productService.getFilteredProducts(dto, page, size, sortBy);
+
+		return ResponseEntity.status(HttpStatus.OK).body(response);
 	}
 
 }

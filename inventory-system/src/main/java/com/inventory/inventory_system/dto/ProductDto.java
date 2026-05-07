@@ -10,15 +10,18 @@ public class ProductDto {
 	private Integer availableQuantity;
 	private Integer reservedQuantity;
 	
+	private Long categoryId;
 	
 	
-	public ProductDto(Long id, String name, Double price, Integer availableQuantity, Integer reservedQuantity) {
+	
+	public ProductDto(Long id, String name, Double price, Integer availableQuantity, Integer reservedQuantity,Long categoryId) {
 		super();
 		this.id = id;
 		this.name = name;
 		this.price = price;
 		this.availableQuantity = availableQuantity;
 		this.reservedQuantity = reservedQuantity;
+		this.categoryId=categoryId;
 	}
 	public Long getId() {
 		return id;
@@ -50,6 +53,13 @@ public class ProductDto {
 	public void setReservedQuantity(Integer reservedQuantity) {
 		this.reservedQuantity = reservedQuantity;
 	}
+	
+	public Long getCategoryId() {
+		return categoryId;
+	}
+	public void setCategoryId(Long categoryId) {
+		this.categoryId = categoryId;
+	}
 	public ProductDto() {
 		super();
 		// TODO Auto-generated constructor stub
@@ -57,9 +67,9 @@ public class ProductDto {
 	@Override
 	public String toString() {
 		return "ProductDto [id=" + id + ", name=" + name + ", price=" + price + ", availableQuantity="
-				+ availableQuantity + ", reservedQuantity=" + reservedQuantity + "]";
+				+ availableQuantity + ", reservedQuantity=" + reservedQuantity + ", categoryId=" + categoryId + "]";
 	}
-
+	
 	
 	
 }

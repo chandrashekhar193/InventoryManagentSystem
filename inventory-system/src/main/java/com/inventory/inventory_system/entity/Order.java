@@ -23,10 +23,8 @@ public class Order {
 
 	    private Long productId;
 	    private Integer quantity;
-	    
-	    
 	    private String status;
-	    
+	    private Long categoryId;
 	    
 	    @Enumerated(EnumType.STRING)
 	    private OrderStatus orderStatus;
@@ -84,8 +82,16 @@ public class Order {
 
 		
 
+		public Long getCategoryId() {
+			return categoryId;
+		}
+
+		public void setCategoryId(Long categoryId) {
+			this.categoryId = categoryId;
+		}
+
 		public Order(Long id, Long productId, Integer quantity, String status, OrderStatus orderStatus,
-				LocalDateTime createdAt) {
+				LocalDateTime createdAt,Long categoryId) {
 			super();
 			this.id = id;
 			this.productId = productId;
@@ -93,6 +99,7 @@ public class Order {
 			this.status = status;
 			this.orderStatus = orderStatus;
 			this.createdAt = createdAt;
+			this.categoryId=categoryId;
 		}
 
 		public Order() {
